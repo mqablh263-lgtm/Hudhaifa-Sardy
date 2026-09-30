@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سجل متابعة الطالب حذيفة السردي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   الألوان والمتغيرات
+   ========================================================= */
+:root {
+  --bg: #f6f4ee;
+  --card: #ffffff;
+  --primary: #2f6f5e;
+  --primary-soft: #e6f0ec;
+  --accent: #b8904a;
+  --accent-soft: #f6eedd;
+  --review: #3d6f96;
+  --review-soft: #e7eff6;
+  --danger: #b14a4a;
+  --danger-soft: #f8e9e9;
+  --text: #24302c;
+  --muted: #6b7773;
+  --border: #e4e1d6;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(40, 60, 50, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+}
+button, input, select, textarea { font-family: inherit; }
+
+.container { max-width: 1000px; margin: 0 auto; padding: 24px 16px 48px; }
+
+/* ================= رأس الموقع ================= */
+.header {
+  background: linear-gradient(135deg, var(--primary), #3f8a75);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.header .eyebrow { font-size: 15px; font-weight: 500; opacity: 0.9; }
+.header h1 { font-family: "Amiri", "Tajawal", serif; font-size: 38px; margin: 6px 0 4px; }
+.header .subtitle { font-size: 15px; opacity: 0.9; }
+
+.toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
+
+/* ================= الأزرار ================= */
+.btn {
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-light   { background: #fff; color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+.btn-accent  { background: var(--accent); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-ghost   { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-sm { font-size: 13px; padding: 4px 10px; border-radius: 8px; }
+.btn-edit   { background: var(--primary-soft); color: var(--primary); }
+.btn-delete { background: var(--danger-soft); color: var(--danger); }
+
+/* ================= الأقسام ================= */
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.section-head .section-title { margin-bottom: 0; }
+.section > .section-title { margin-bottom: 16px; }
+.count {
+  font-size: 13px; font-weight: 700;
+  background: var(--primary-soft); color: var(--primary);
+  border-radius: 20px; padding: 2px 10px;
+}
+
+/* ================= الإحصائيات ================= */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.stat .icon { font-size: 22px; }
+.stat .label { font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+.stat .value { font-size: 26px; font-weight: 800; color: var(--primary); line-height: 1.3; margin-top: 2px; }
+.stat .value.small { font-size: 18px; }
+.stat.review-stat .value { color: var(--review); }
+.stat.highlight { background: var(--accent-soft); border-color: #eadbb8; }
+.stat.highlight .value { color: var(--accent); }
+
+/* ================= آخر الإنجازات ================= */
+.recent { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.recent-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border-right: 4px solid var(--primary);
+}
+.recent-card.review { border-right-color: var(--review); }
+.recent-card.first { background: #fbf8ef; }
+.recent-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.recent-card .type { font-weight: 800; }
+.recent-card .date { font-size: 13px; color: var(--muted); }
+.recent-card .pages { font-size: 17px; font-weight: 700; }
+.recent-card .meta { font-size: 14px; color: var(--muted); }
+.recent-card .grade-big { font-size: 22px; font-weight: 800; color: var(--primary); }
+.recent-card.review .grade-big { color: var(--review); }
+.recent-card .notes { font-size: 13px; color: var(--muted); margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
+.badge-new {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  background: var(--accent); color: #fff; border-radius: 6px;
+  padding: 0 7px; margin-right: 6px; vertical-align: middle;
+}
+
+/* ================= الجداول ================= */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--border); vertical-align: middle; }
+thead th { background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 14px; white-space: nowrap; }
+thead th:first-child { border-radius: 0 10px 10px 0; }
+thead th:last-child  { border-radius: 10px 0 0 10px; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fafaf6; }
+.log-table { min-width: 680px; }
+.section.review thead th { background: var(--review-soft); color: var(--review); }
+.section.review .grade { color: var(--review); }
+.section.review .count { background: var(--review-soft); color: var(--review); }
+.btn-review { background: var(--review); color: #fff; }
+.log-table td.notes-cell { text-align: right; font-size: 14px; color: var(--muted); max-width: 240px; }
+.type-pill {
+  display: inline-block; font-size: 13px; font-weight: 700;
+  border-radius: 20px; padding: 1px 10px; white-space: nowrap;
+  background: var(--primary-soft); color: var(--primary);
+}
+.type-pill.review { background: var(--review-soft); color: var(--review); }
+.grade { font-weight: 800; color: var(--primary); }
+.no-val { color: var(--muted); }
+.actions { display: flex; gap: 6px; justify-content: center; }
+.empty-msg { text-align: center; color: var(--muted); padding: 18px; }
+
+.schedule table { max-width: 420px; margin: 0 auto; }
+.schedule td:first-child { font-weight: 700; }
+.note {
+  text-align: center; margin-top: 14px; font-weight: 700;
+  color: var(--primary); background: var(--primary-soft);
+  border-radius: 10px; padding: 10px;
+}
+
+/* ================= نافذة الإضافة/التعديل ================= */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(20, 30, 25, 0.45);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  z-index: 50;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 520px;
+  padding: 22px 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  margin: auto 0;
+}
+.modal h2 { font-size: 20px; margin-bottom: 16px; }
+.field { margin-bottom: 14px; }
+.field > label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.field .hint { font-weight: 400; color: var(--muted); font-size: 12px; }
+.field input, .field textarea {
+  width: 100%;
+  font-size: 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: #fdfdfb;
+  color: var(--text);
+}
+.field input:focus, .field textarea:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+.field textarea { resize: vertical; min-height: 70px; }
+
+.type-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.type-choice input { display: none; }
+.type-choice label {
+  display: block; text-align: center; cursor: pointer;
+  border: 2px solid var(--border); border-radius: 10px;
+  padding: 10px; font-weight: 700; background: var(--bg);
+}
+.type-choice input:checked + label { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.type-choice input#typeReview:checked + label { border-color: var(--review); background: var(--review-soft); color: var(--review); }
+
+.pages-row { display: grid; grid-template-columns: 1fr 1fr 110px; gap: 10px; align-items: end; }
+.pages-row small { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.pages-total {
+  text-align: center; background: var(--accent-soft); color: var(--accent);
+  border-radius: 10px; padding: 9px 6px; font-weight: 800;
+}
+.grade-input { position: relative; }
+.grade-input span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.form-error {
+  display: none; background: var(--danger-soft); color: var(--danger);
+  border-radius: 10px; padding: 8px 12px; font-size: 14px; margin-bottom: 12px;
+}
+.form-actions { display: flex; gap: 10px; }
+.form-actions .btn { flex: 1; }
+
+/* ================= كلمة من القلب ================= */
+.closing {
+  margin-top: 24px;
+  background: linear-gradient(180deg, #fbf8ef, #f4efe0);
+  border: 1px solid #eadbb8;
+  border-radius: var(--radius);
+  padding: 30px 22px;
+  text-align: center;
+}
+.closing h3 { font-size: 20px; color: var(--accent); margin-bottom: 12px; }
+.closing p {
+  font-family: "Amiri", "Tajawal", serif;
+  font-size: 22px; line-height: 2; color: #4a3f2a;
+  max-width: 640px; margin: 0 auto;
+}
+
+/* ================= أسفل الصفحة ================= */
+.footer {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  margin-top: 20px; font-size: 13px; color: var(--muted); align-items: center;
+}
+
+/* ================= تنبيه منبثق ================= */
+.toast {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--primary); color: #fff;
+  padding: 10px 20px; border-radius: 10px; font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transition: transform 0.25s ease; z-index: 60;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.print-only { display: none; }
+
+/* ================= الهاتف ================= */
+@media (max-width: 600px) {
+  .header h1 { font-size: 30px; }
+  .section { padding: 18px 14px; }
+  .stat .value { font-size: 22px; }
+  .closing p { font-size: 19px; }
+  .pages-row { grid-template-columns: 1fr 1fr; }
+  .pages-total { grid-column: 1 / -1; }
+}
+
+/* =========================================================
+   الطباعة — تقرير A4
+   ========================================================= */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+
+  body {
+    background: #fff; font-size: 12px;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .container { max-width: 100%; padding: 0; }
+  .no-print, .toolbar, .modal-backdrop, .toast, .badge-new { display: none !important; }
+  .print-only { display: block; }
+
+  .header {
+    background: none; color: var(--text); box-shadow: none;
+    border-bottom: 2px solid var(--primary); border-radius: 0; padding: 0 0 10px;
+  }
+  .header h1 { font-size: 26px; color: var(--primary); }
+  .header .eyebrow, .header .subtitle { opacity: 1; color: var(--muted); font-size: 12px; }
+  .print-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .section {
+    box-shadow: none; border: 1px solid #d8d4c6; border-radius: 8px;
+    padding: 10px 12px; margin-top: 10px;
+  }
+  .section.keep { break-inside: avoid; page-break-inside: avoid; }
+  .section-title { font-size: 15px; }
+  .section > .section-title { margin-bottom: 8px; }
+
+  .stats { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .stat { padding: 6px 4px; border-radius: 6px; }
+  .stat .icon { font-size: 13px; }
+  .stat .label { font-size: 10px; }
+  .stat .value { font-size: 16px; }
+  .stat .value.small { font-size: 12px; }
+
+  table { font-size: 11px; min-width: 0 !important; }
+  th, td { padding: 5px 5px; border: 1px solid #d8d4c6; }
+  thead th { border-radius: 0 !important; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  tbody tr:hover { background: none; }
+  td.notes-cell { font-size: 10.5px; }
+  .note { font-size: 12px; padding: 6px; }
+
+  .closing { padding: 14px; margin-top: 12px; break-inside: avoid; page-break-inside: avoid; }
+  .closing h3 { font-size: 14px; margin-bottom: 4px; }
+  .closing p { font-size: 16px; line-height: 1.8; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- ================= رأس الموقع ================= -->
+  <header class="header">
+    <div class="eyebrow">متابعة إنجاز الطالب</div>
+    <h1>حذيفة السردي</h1>
+    <div class="subtitle">سجل متابعة التسميع والإنجاز</div>
+    <div class="print-only print-date" id="printDate"></div>
+    <div class="toolbar no-print">
+      <button class="btn btn-accent" onclick="openForm()">➕ إضافة إنجاز جديد</button>
+      <button class="btn btn-light" onclick="printReport()">🖨️ طباعة التقرير</button>
+    </div>
+  </header>
+
+  <!-- ================= الإحصائيات ================= -->
+  <section class="section keep">
+    <h2 class="section-title">📊 إحصائيات الطالب</h2>
+    <div class="stats">
+      <div class="stat"><div class="icon">📖</div><div class="label">إجمالي لقاءات الحفظ</div><div class="value" id="stHifz">0</div></div>
+      <div class="stat review-stat"><div class="icon">🔄</div><div class="label">إجمالي لقاءات المراجعة</div><div class="value" id="stReview">0</div></div>
+      <div class="stat"><div class="icon">🎙️</div><div class="label">إجمالي مرات التسميع</div><div class="value" id="stTotal">0</div></div>
+      <div class="stat"><div class="icon">📄</div><div class="label">إجمالي الصفحات المسمّعة</div><div class="value" id="stPages">0</div></div>
+      <div class="stat"><div class="icon">📖</div><div class="label">إجمالي صفحات الحفظ المسمّعة</div><div class="value" id="stHifzPages">0</div></div>
+      <div class="stat review-stat"><div class="icon">🔄</div><div class="label">إجمالي صفحات المراجعة المسمّعة</div><div class="value" id="stReviewPages">0</div></div>
+      <div class="stat highlight"><div class="icon">📅</div><div class="label">آخر تاريخ تسميع</div><div class="value small" id="stLastDate">—</div></div>
+    </div>
+  </section>
+
+  <!-- ================= آخر الإنجازات (لا يُطبع) ================= -->
+  <section class="section no-print">
+    <h2 class="section-title">🏆 آخر الإنجازات</h2>
+    <div class="recent" id="recentList"></div>
+  </section>
+
+  <!-- ================= جدول التسميع ================= -->
+  <section class="section schedule keep">
+    <h2 class="section-title">📅 جدول التسميع</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>اليوم</th><th>نوع اللقاء</th></tr></thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+    <div class="note">يكون التسميع أسبوعيًا كل يوم أحد وخميس.</div>
+  </section>
+
+  <!-- ================= سجل الحفظ ================= -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">📖 سجل إنجازات الحفظ <span class="count" id="hifzCount">0</span></h2>
+      <button class="btn btn-primary btn-sm no-print" onclick="openForm(null, 'حفظ')">➕ إضافة حفظ</button>
+    </div>
+    <div class="table-wrap">
+      <table class="log-table">
+        <thead>
+          <tr><th>رقم</th><th>الصفحات</th><th>عدد الصفحات</th><th>العلامة</th><th>التاريخ</th><th>الملاحظات</th><th class="no-print">إدارة</th></tr>
+        </thead>
+        <tbody id="hifzBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= سجل المراجعة ================= -->
+  <section class="section review">
+    <div class="section-head">
+      <h2 class="section-title">🔄 سجل إنجازات المراجعة <span class="count" id="reviewCount">0</span></h2>
+      <button class="btn btn-review btn-sm no-print" onclick="openForm(null, 'مراجعة')">➕ إضافة مراجعة</button>
+    </div>
+    <div class="table-wrap">
+      <table class="log-table">
+        <thead>
+          <tr><th>رقم</th><th>الصفحات</th><th>عدد الصفحات</th><th>العلامة</th><th>التاريخ</th><th>الملاحظات</th><th class="no-print">إدارة</th></tr>
+        </thead>
+        <tbody id="reviewBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= كلمة من القلب ================= -->
+  <section class="closing">
+    <h3>❤️ كلمة من القلب</h3>
+    <p>اللهم اجعل القرآن العظيم ربيع قلبك، ونور صدرك، وجلاء همك، وذهاب غمك.</p>
+  </section>
+
+  <!-- ================= نسخ احتياطي ================= -->
+  <div class="footer no-print">
+    <span>البيانات محفوظة في هذا المتصفح.</span>
+    <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇️ تنزيل نسخة احتياطية</button>
+    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importFile').click()">⬆️ استعادة نسخة</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden onchange="importData(event)">
+  </div>
+</div>
+
+<!-- ================= نموذج الإضافة / التعديل ================= -->
+<div class="modal-backdrop" id="modal" onclick="if (event.target === this) closeForm()">
+  <form class="modal" id="entryForm" onsubmit="saveEntry(event)" novalidate>
+    <h2 id="formTitle">➕ إضافة إنجاز جديد</h2>
+    <div class="form-error" id="formError"></div>
+
+    <div class="field">
+      <label>نوع التسميع</label>
+      <div class="type-choice">
+        <input type="radio" name="type" id="typeHifz" value="حفظ" checked onchange="updateGradeHint()">
+        <label for="typeHifz">📖 حفظ</label>
+        <input type="radio" name="type" id="typeReview" value="مراجعة" onchange="updateGradeHint()">
+        <label for="typeReview">🔄 مراجعة</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="fDate">تاريخ التسميع</label>
+      <input type="date" id="fDate" required>
+    </div>
+
+    <div class="field">
+      <label>الصفحات</label>
+      <div class="pages-row">
+        <div><small>من صفحة</small><input type="number" id="fFrom" min="1" max="604" inputmode="numeric" oninput="updateTotal()"></div>
+        <div><small>إلى صفحة</small><input type="number" id="fTo" min="1" max="604" inputmode="numeric" oninput="updateTotal()"></div>
+        <div class="pages-total" id="fTotal">— صفحة</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="fGrade">العلامة <span class="hint" id="gradeHint"></span></label>
+      <div class="grade-input">
+        <input type="number" id="fGrade" min="0" max="100" step="0.5" inputmode="decimal" placeholder="مثال: 98">
+        <span>%</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="fNotes">ملاحظات <span class="hint">(اختياري)</span></label>
+      <textarea id="fNotes" placeholder="مثال: تسميع ممتاز مع بعض الأخطاء البسيطة."></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" id="saveBtn">✅ حفظ الإنجاز</button>
+      <button type="button" class="btn btn-ghost" onclick="closeForm()">إلغاء</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ⚙️ الإعدادات
+   ========================================================= */
+const STORAGE_KEY = "hudhaifa_achievements_v1";
+
+// البيانات الأولية — تُستخدم فقط عند أول فتح للموقع
+const INITIAL_DATA = [
+  { type: "حفظ",    from: 1,  to: 10, grade: 95,   date: "2026-09-12", notes: "" },
+  { type: "حفظ",    from: 11, to: 16, grade: 96,   date: "2026-09-20", notes: "" },
+  { type: "حفظ",    from: 17, to: 24, grade: 98,   date: "2026-09-27", notes: "" },
+  { type: "مراجعة", from: 1,  to: 10, grade: null, date: "2026-09-28", notes: "" },
+];
+
+// مواعيد التسميع الأسبوعية
+const SCHEDULE = [
+  { day: "الأحد",  kind: "📖 تسميع" },
+  { day: "الخميس", kind: "📖 تسميع" },
+];
+
+/* =========================================================
+   💾 التخزين (localStorage)
+   ========================================================= */
+let achievements = [];
+let editingId = null;
+
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw !== null) { achievements = JSON.parse(raw); return; }
+  } catch (e) { console.warn("تعذر قراءة البيانات", e); }
+  // أول تشغيل: تحميل البيانات الأولية
+  achievements = INITIAL_DATA.map(a => ({ id: newId(), createdAt: Date.now(), ...a }));
+  saveData();
+}
+
+function saveData() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(achievements));
+  } catch (e) {
+    alert("تعذر حفظ البيانات في المتصفح. تأكد من أن المتصفح يسمح بالتخزين المحلي.");
+  }
+}
+
+/* =========================================================
+   🧮 أدوات مساعدة
+   ========================================================= */
+const pageCount = a => a.to - a.from + 1;
+const hasGrade  = a => a.grade !== null && a.grade !== undefined && a.grade !== "";
+const isReview  = a => a.type === "مراجعة";
+const typeLabel = a => isReview(a) ? "🔄 مراجعة" : "📖 حفظ";
+const pagesText = a => a.from === a.to ? `${a.from}` : `${a.from} – ${a.to}`;
+const gradeText = a => hasGrade(a) ? `${a.grade}%` : "—";
+
+// "2026-09-27" → "27-09-2026"
+function fmtDate(iso) {
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-");
+  return `${d}-${m}-${y}`;
+}
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function escapeHTML(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ترتيب زمني تصاعدي (الأقدم أولًا) مع ترقيم تسلسلي
+function chronological(list = achievements) {
+  return [...list]
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.createdAt || 0) - (b.createdAt || 0))
+    .map((a, i) => ({ ...a, n: i + 1 }));
+}
+
+/* =========================================================
+   🖼️ العرض
+   ========================================================= */
+function renderStats(all) {
+  const hifz = all.filter(a => !isReview(a));
+  const review = all.filter(isReview);
+  const last = all[all.length - 1];
+  const sumPages = list => list.reduce((s, a) => s + pageCount(a), 0);
+
+  setText("stHifz", hifz.length);
+  setText("stReview", review.length);
+  setText("stTotal", all.length);
+  setText("stPages", sumPages(all));
+  setText("stHifzPages", sumPages(hifz));
+  setText("stReviewPages", sumPages(review));
+  setText("stLastDate", last ? fmtDate(last.date) : "—");
+  setText("hifzCount", hifz.length);
+  setText("reviewCount", review.length);
+}
+
+function renderRecent(all) {
+  const box = document.getElementById("recentList");
+  const recent = [...all].reverse().slice(0, 3);
+  if (!recent.length) {
+    box.innerHTML = `<div class="empty-msg">لا توجد إنجازات بعد — ابدأ بإضافة أول إنجاز.</div>`;
+    return;
+  }
+  box.innerHTML = recent.map((a, i) => `
+    <div class="recent-card ${isReview(a) ? "review" : ""} ${i === 0 ? "first" : ""}">
+      <div class="top">
+        <span class="type">${typeLabel(a)}${i === 0 ? '<span class="badge-new">الأحدث</span>' : ""}</span>
+        <span class="date">${fmtDate(a.date)}</span>
+      </div>
+      <div class="top">
+        <div>
+          <div class="pages">الصفحات ${pagesText(a)}</div>
+          <div class="meta">${pageCount(a)} صفحات</div>
+        </div>
+        <div class="grade-big">${gradeText(a)}</div>
+      </div>
+      ${a.notes ? `<div class="notes">📝 ${escapeHTML(a.notes)}</div>` : ""}
+    </div>`).join("");
+}
+
+// جدول لكل نوع: ترقيم داخل النوع، والأحدث أولًا
+function renderTypeTable(bodyId, list) {
+  const body = document.getElementById(bodyId);
+  if (!list.length) {
+    body.innerHTML = `<tr><td colspan="7" class="empty-msg">لا توجد إنجازات مسجلة بعد</td></tr>`;
+    return;
+  }
+  body.innerHTML = list.map((a, i) => ({ ...a, k: i + 1 })).reverse().map(a => `
+    <tr>
+      <td><strong>${a.k}</strong></td>
+      <td>${pagesText(a)}</td>
+      <td>${pageCount(a)}</td>
+      <td>${hasGrade(a) ? `<span class="grade">${a.grade}%</span>` : '<span class="no-val">—</span>'}</td>
+      <td style="white-space:nowrap">${fmtDate(a.date)}</td>
+      <td class="notes-cell">${a.notes ? escapeHTML(a.notes) : '<span class="no-val">—</span>'}</td>
+      <td class="no-print">
+        <div class="actions">
+          <button class="btn btn-sm btn-edit" onclick="openForm('${a.id}')">✏️ تعديل</button>
+          <button class="btn btn-sm btn-delete" onclick="deleteEntry('${a.id}')">🗑️ حذف</button>
+        </div>
+      </td>
+    </tr>`).join("");
+}
+
+function renderSchedule() {
+  document.getElementById("scheduleBody").innerHTML =
+    SCHEDULE.map(s => `<tr><td>${s.day}</td><td>${s.kind}</td></tr>`).join("");
+}
+
+function setText(id, v) { document.getElementById(id).textContent = v; }
+
+function render() {
+  const all = chronological();
+  const hifz = all.filter(a => !isReview(a));
+  const review = all.filter(isReview);
+  renderStats(all);
+  renderRecent(all);
+  renderTypeTable("hifzBody", hifz);
+  renderTypeTable("reviewBody", review);
+  setText("printDate", "تاريخ التقرير: " + fmtDate(todayISO()));
+}
+
+/* =========================================================
+   📝 النموذج: إضافة / تعديل
+   ========================================================= */
+const $ = id => document.getElementById(id);
+
+function openForm(id = null, presetType = "حفظ") {
+  editingId = id;
+  const form = $("entryForm");
+  form.reset();
+  hideError();
+
+  if (id) {
+    const a = achievements.find(x => x.id === id);
+    if (!a) return;
+    $("formTitle").textContent = "✏️ تعديل الإنجاز";
+    $("saveBtn").textContent = "✅ حفظ التعديلات";
+    (isReview(a) ? $("typeReview") : $("typeHifz")).checked = true;
+    $("fDate").value = a.date;
+    $("fFrom").value = a.from;
+    $("fTo").value = a.to;
+    $("fGrade").value = hasGrade(a) ? a.grade : "";
+    $("fNotes").value = a.notes || "";
+  } else {
+    $("formTitle").textContent = "➕ إضافة إنجاز جديد";
+    $("saveBtn").textContent = "✅ حفظ الإنجاز";
+    (presetType === "مراجعة" ? $("typeReview") : $("typeHifz")).checked = true;
+    $("fDate").value = todayISO();
+    // اقتراح الصفحة التالية بعد آخر حفظ
+    const lastHifz = chronological().filter(a => !isReview(a)).pop();
+    if (lastHifz && presetType !== "مراجعة") $("fFrom").value = lastHifz.to + 1;
+  }
+  updateTotal();
+  updateGradeHint();
+  $("modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => (id ? $("fDate") : $("fTo")).focus(), 50);
+}
+
+function closeForm() {
+  $("modal").classList.remove("open");
+  document.body.style.overflow = "";
+  editingId = null;
+}
+
+function currentType() {
+  return $("typeReview").checked ? "مراجعة" : "حفظ";
+}
+
+function updateGradeHint() {
+  $("gradeHint").textContent = currentType() === "مراجعة" ? "(اختياري في المراجعة)" : "(مطلوبة في الحفظ)";
+}
+
+function updateTotal() {
+  const from = parseInt($("fFrom").value, 10);
+  const to = parseInt($("fTo").value, 10);
+  $("fTotal").textContent = (from > 0 && to >= from) ? `${to - from + 1} صفحة` : "— صفحة";
+}
+
+function showError(msg) { const e = $("formError"); e.textContent = msg; e.style.display = "block"; }
+function hideError() { $("formError").style.display = "none"; }
+
+function saveEntry(ev) {
+  ev.preventDefault();
+  const type = currentType();
+  const date = $("fDate").value;
+  const from = parseInt($("fFrom").value, 10);
+  const to = parseInt($("fTo").value, 10);
+  const gradeRaw = $("fGrade").value.trim();
+  const notes = $("fNotes").value.trim();
+
+  if (!date) return showError("اختر تاريخ التسميع.");
+  if (!(from >= 1)) return showError("أدخل رقم صفحة البداية.");
+  if (!(to >= 1)) return showError("أدخل رقم صفحة النهاية.");
+  if (to < from) return showError("صفحة النهاية يجب أن تكون بعد صفحة البداية أو مساوية لها.");
+  if (from > 604 || to > 604) return showError("رقم الصفحة يجب ألا يتجاوز 604.");
+
+  let grade = null;
+  if (gradeRaw !== "") {
+    grade = Number(gradeRaw);
+    if (isNaN(grade) || grade < 0 || grade > 100) return showError("العلامة يجب أن تكون بين 0 و 100.");
+  } else if (type === "حفظ") {
+    return showError("أدخل علامة الحفظ.");
+  }
+
+  const data = { type, date, from, to, grade, notes };
+
+  if (editingId) {
+    const i = achievements.findIndex(x => x.id === editingId);
+    if (i > -1) achievements[i] = { ...achievements[i], ...data };
+    toast("تم حفظ التعديلات ✅");
+  } else {
+    achievements.push({ id: newId(), createdAt: Date.now(), ...data });
+    toast("تمت إضافة الإنجاز ✅");
+  }
+  saveData();
+  closeForm();
+  render();
+}
+
+function deleteEntry(id) {
+  const a = achievements.find(x => x.id === id);
+  if (!a) return;
+  const ok = confirm(`هل أنت متأكد من حذف هذا الإنجاز؟\n\n${a.type} — الصفحات ${pagesText(a)} — ${fmtDate(a.date)}\n\nلا يمكن التراجع عن الحذف.`);
+  if (!ok) return;
+  achievements = achievements.filter(x => x.id !== id);
+  saveData();
+  render();
+  toast("تم حذف الإنجاز 🗑️");
+}
+
+/* =========================================================
+   🔐 نسخ احتياطي واستعادة
+   ========================================================= */
+function exportData() {
+  const blob = new Blob([JSON.stringify(achievements, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `huthaifa-backup-${todayISO()}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(ev) {
+  const file = ev.target.files[0];
+  ev.target.value = "";
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!Array.isArray(data) || !data.every(a => a.type && a.date && a.from && a.to)) throw new Error();
+      if (!confirm(`سيتم استبدال البيانات الحالية بـ ${data.length} إنجاز من الملف. هل تريد المتابعة؟`)) return;
+      achievements = data.map(a => ({ id: a.id || newId(), createdAt: a.createdAt || Date.now(), notes: "", ...a }));
+      saveData();
+      render();
+      toast("تمت استعادة البيانات ✅");
+    } catch {
+      alert("الملف غير صالح.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* =========================================================
+   🔔 تنبيه صغير
+   ========================================================= */
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* =========================================================
+   🖨️ الطباعة
+   داخل معاينة محمية (مثل معاينة الملفات في بعض التطبيقات) يمنع المتصفح
+   نافذة الطباعة، فنعرض تنبيهًا بفتح الملف مباشرة في المتصفح.
+   ========================================================= */
+function printReport() {
+  let embedded = false;
+  try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+  if (embedded) {
+    toast("افتح الملف مباشرة في المتصفح (Chrome) ثم اضغط طباعة");
+  }
+  try { window.print(); } catch (e) { /* ممنوعة في المعاينة */ }
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeForm(); });
+
+/* =========================================================
+   🚀 التشغيل
+   ========================================================= */
+renderSchedule();
+loadData();
+render();
+</script>
+</body>
+</html>
